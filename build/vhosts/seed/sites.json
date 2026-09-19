@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "managementHosts": ["localhost", "127.0.0.1"],
+  "sites": []
+}

@@ -1,75 +1,85 @@
-# Nuxt Minimal Starter
+# vhosts
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nginx-style static virtual hosts with a Nuxt management UI.
 
-## Setup
+## What it does
 
-Make sure to install dependencies:
+- Serves files from `appRoot` based on the HTTP `Host` header
+- Optional SPA fallback per site
+- Auto-maps `{label}.{apex}` → `{path}/subdomains/{label}/public/`
+- Management UI + `/api` on `managementHosts` (default `localhost`, `127.0.0.1`)
+- TLS/DNS stay outside — typically [acmedns-stack](../../acmedns-stack) Proxy Hosts → `http://vhosts:80`
 
-```bash
-# npm
-npm install
+## Layout
 
-# pnpm
-pnpm install
+**Data** (`NUXT_APP_ROOT`, default `.data`):
 
-# yarn
-yarn install
-
-# bun
-bun install
+```
+mdstn.com/
+  public/
+  subdomains/
+    sub1/public/
+harianto.dev/
+  public/
 ```
 
-## Development Server
+**Config** (`NUXT_APP_CONFIG`, default `.config`): `sites.json`
 
-Start the development server on `http://localhost:3000`:
+```json
+{
+  "version": 1,
+  "managementHosts": ["localhost", "127.0.0.1"],
+  "sites": [
+    {
+      "uuid": "…",
+      "path": "mdstn.com",
+      "hosts": ["mdstn.com", "otherhost.com"],
+      "spa": false,
+      "autoSubdomains": true,
+      "enabled": true,
+      "engine": "static"
+    }
+  ]
+}
+```
+
+Every site list item uses field `uuid` (UUID v7). `engine: "php"` is reserved for later.
+
+## Local development
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
+bun install
 bun run dev
 ```
 
-## Production
+UI on `http://localhost:3000` (Nuxt default). Production / Docker listens on **port 80**.
 
-Build the application for production:
+## Docker
+
+Copy compose examples from the repo root:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+cp docker-compose.yml.example docker-compose.yml
+cp docker-compose.override.yml.example docker-compose.override.yml
 ```
 
-Locally preview production build:
+- Publishes `80:80`, `NITRO_PORT=80`
+- Volumes: `./data/vhosts` → data, `./config/vhosts` → config
+- Override joins external networks `cloudflared` and `dns` so acmedns-stack can use `forwardHost: "vhosts"`
+
+## Point a domain (via acmedns-stack)
+
+1. Put both stacks on the shared `dns` Docker network (or forward to `host.docker.internal:80`).
+2. Issue a cert for the apex / wildcard in acmedns-stack.
+3. Proxy Host: domains = site hosts; forward `http` → `vhosts:80`; bind certificate; Force SSL as needed.
+4. Public DNS to the acmedns edge (`:443`), not directly to this container, when using edge TLS.
+
+No auth on the management UI in this version — keep it on management hosts / private network, or protect at the edge (bearer / access lists).
+
+## Scripts
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
+bun run dev
+bun run build
 bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
