@@ -2,10 +2,9 @@ export default defineEventHandler(async (event) => {
   const pathname = getRequestURL(event).pathname
   if (!pathname.startsWith('/api/')) return
 
-  const file = await readSitesFile(event)
-  const host = sanitizeHost(getRequestHeader(event, 'host'))
-  if (!host || !isManagementHost(host, file)) {
+  // API only on control listener (:1080).
+  if (!isControlListener(event)) {
     setResponseStatus(event, 403)
-    return 'Forbidden'
+    return 'Forbidden — use control port'
   }
 })

@@ -16,6 +16,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NITRO_HOST=0.0.0.0
 ENV NITRO_PORT=80
+ENV VHOSTS_CONTROL_PORT=1080
+ENV VHOSTS_CONTROL_TLS_PORT=1443
 COPY --from=build /app/.output .output
-EXPOSE 80
+EXPOSE 80 1080
 CMD ["bun", ".output/server/index.mjs"]

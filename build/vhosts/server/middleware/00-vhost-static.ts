@@ -1,4 +1,9 @@
 export default defineEventHandler(async (event) => {
+  // Management UI + API live on the control listener (:1080).
+  if (isControlListener(event)) {
+    return
+  }
+
   const url = getRequestURL(event)
   const pathname = url.pathname
 
@@ -17,8 +22,10 @@ export default defineEventHandler(async (event) => {
     ensureSubdir: true,
   })
 
+  // Never serve Nuxt on the edge — even for managementHosts.
   if (resolved.kind === 'management') {
-    return
+    setResponseStatus(event, 404)
+    return `Management UI is on port ${controlPort()}`
   }
 
   if (resolved.kind === 'unknown' || !resolved.publicRoot || !resolved.site) {

@@ -11,7 +11,8 @@ async function refresh() {
   <div>
     <h1>Sites</h1>
     <p class="lede">
-      Host-header static vhosts. Point domains here via acmedns-stack Proxy Hosts
+      Host-header static vhosts. Management UI on <code>:1080</code>.
+      Point public domains via acmedns-stack Proxy Hosts
       (<code>http://vhosts:80</code>).
     </p>
 
