@@ -2,6 +2,7 @@
 /.legacy/
 /data/
 /.data/
+/.config/
 /config/
 .env
 /docker-compose.yml

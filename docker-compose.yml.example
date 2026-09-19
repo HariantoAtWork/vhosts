@@ -7,7 +7,10 @@ services:
       - "3000:3000"
     volumes:
       - ./data/vhosts:/var/lib/vhosts
+      - ./config/vhosts:/etc/vhosts
     environment:
       - TZ=${TZ:-UTC}
       - NITRO_HOST=0.0.0.0
       - NITRO_PORT=3000
+      - NUXT_APP_ROOT=${NUXT_APP_ROOT:-/var/lib/vhosts}
+      - NUXT_APP_CONFIG=${NUXT_APP_CONFIG:-/etc/vhosts}
