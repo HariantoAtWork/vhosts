@@ -1,0 +1,6 @@
+services:
+  vhosts:
+    build:
+      context: build/vhosts
+      dockerfile: Dockerfile
+    image: harianto/vhosts:latest

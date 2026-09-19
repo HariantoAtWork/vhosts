@@ -1,0 +1,9 @@
+/.original/
+/.legacy/
+/data/
+/.data/
+/config/
+.env
+/docker-compose.yml
+/docker-compose.override.yml
+node_modules/

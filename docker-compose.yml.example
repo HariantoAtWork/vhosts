@@ -1,0 +1,13 @@
+services:
+  vhosts:
+    image: harianto/vhosts:latest
+    container_name: vhosts
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/vhosts:/var/lib/vhosts
+    environment:
+      - TZ=${TZ:-UTC}
+      - NITRO_HOST=0.0.0.0
+      - NITRO_PORT=3000
