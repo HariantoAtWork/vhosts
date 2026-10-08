@@ -29,6 +29,15 @@ function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
 
 <template>
   <form class="card" @submit.prevent="emit('submit')">
+    <label for="hosts">Hosts (one per line)</label>
+    <textarea
+      id="hosts"
+      v-model="hostsText"
+      rows="4"
+      required
+      placeholder="mdstn.com&#10;otherhost.com"
+    />
+
     <label for="path">Path (folder under appRoot)</label>
     <input
       id="path"
@@ -38,15 +47,6 @@ function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
       placeholder="mdstn.com"
       @input="patch('path', ($event.target as HTMLInputElement).value)"
     >
-
-    <label for="hosts">Hosts (one per line)</label>
-    <textarea
-      id="hosts"
-      v-model="hostsText"
-      rows="4"
-      required
-      placeholder="mdstn.com&#10;otherhost.com"
-    />
 
     <div class="checks">
       <label>
