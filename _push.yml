@@ -4,7 +4,7 @@
 services:
   vhosts:
     build:
-      context: build/vhosts
+      context: src/vhosts
       dockerfile: Dockerfile.platform
       platforms:
         - linux/amd64
