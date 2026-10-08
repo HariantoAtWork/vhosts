@@ -1,18 +1,12 @@
 import { access, constants, mkdir, writeFile } from 'node:fs/promises'
-import { readFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import {
   siteBaseDir,
   sitePublicDir,
   siteSubdomainsDir,
   subdomainPublicDir,
 } from './paths'
-
-const placeholderSrc = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '../../seed/placeholder.html',
-)
+import { SITE_PLACEHOLDER_HTML } from './theme-page'
 
 async function ensureDir(path: string): Promise<void> {
   await mkdir(path, { recursive: true })
@@ -27,16 +21,7 @@ async function ensurePlaceholder(publicDir: string): Promise<void> {
   } catch {
     // create
   }
-  try {
-    const html = await readFile(placeholderSrc, 'utf8')
-    await writeFile(indexPath, html, 'utf8')
-  } catch {
-    await writeFile(
-      indexPath,
-      '<!DOCTYPE html><html><body><h1>vhosts</h1></body></html>\n',
-      'utf8',
-    )
-  }
+  await writeFile(indexPath, SITE_PLACEHOLDER_HTML, 'utf8')
 }
 
 /** Create apex public/ + subdomains/ (and optional placeholder index). */

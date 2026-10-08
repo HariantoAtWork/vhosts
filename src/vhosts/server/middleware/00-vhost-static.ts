@@ -25,12 +25,14 @@ export default defineEventHandler(async (event) => {
   // Never serve Nuxt on the edge — even for managementHosts.
   if (resolved.kind === 'management') {
     setResponseStatus(event, 404)
-    return `Management UI is on port ${controlPort()}`
+    setHeader(event, 'content-type', 'text/html; charset=utf-8')
+    return edgeManagementHtml(controlPort())
   }
 
   if (resolved.kind === 'unknown' || !resolved.publicRoot || !resolved.site) {
     setResponseStatus(event, 404)
-    return 'Unknown host'
+    setHeader(event, 'content-type', 'text/html; charset=utf-8')
+    return edgeUnknownHostHtml()
   }
 
   const spa = Boolean(resolved.site.spa)

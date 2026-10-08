@@ -4,13 +4,82 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>vhosts</title>
+  <!-- Kept in sync with server/utils/theme-page.ts SITE_PLACEHOLDER_HTML -->
   <style>
-    body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a1a; }
-    code { background: #f0f0f0; padding: 0.1em 0.35em; border-radius: 4px; }
+    :root {
+      --bg: #f6f4ef;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --line: #e7e5e4;
+      --accent: #0f766e;
+      --card: #fffcf7;
+      --font: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 1200px 500px at 10% -10%, #b8ebe3 0%, transparent 55%),
+        radial-gradient(ellipse 900px 400px at 100% 0%, #f0d4b0 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--ink);
+    }
+    .shell { max-width: 640px; margin: 0 auto; padding: 1.5rem; }
+    .top {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      color: var(--muted);
+      margin: 0 0 1.5rem;
+      line-height: 1.5;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .card p { margin: 0; line-height: 1.55; color: var(--ink); }
+    code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
-  <h1>vhosts</h1>
-  <p>Replace this file in <code>public/</code> with your site.</p>
+  <div class="shell">
+    <header class="top">
+      <div class="brand">vhosts</div>
+    </header>
+    <h1>Site ready</h1>
+    <p class="lede">This host is mapped. Replace the files in <code>public/</code> with your site.</p>
+    <div class="card">
+      <p>
+        Drop your static build into this folder (or add an <code>index.html</code>)
+        and it will be served for this Host header on the edge port.
+      </p>
+    </div>
+  </div>
 </body>
 </html>

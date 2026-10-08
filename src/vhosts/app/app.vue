@@ -28,13 +28,16 @@
 
 * { box-sizing: border-box; }
 
+html, body { min-height: 100%; }
+
 body {
   margin: 0;
   font-family: var(--font);
-  background:
-    radial-gradient(1200px 500px at 10% -10%, #d9f3ef 0%, transparent 55%),
-    radial-gradient(900px 400px at 100% 0%, #f5e6d3 0%, transparent 50%),
-    var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 1200px 500px at 10% -10%, #b8ebe3 0%, transparent 55%),
+    radial-gradient(ellipse 900px 400px at 100% 0%, #f0d4b0 0%, transparent 50%);
+  background-attachment: fixed;
   color: var(--ink);
   min-height: 100vh;
 }
