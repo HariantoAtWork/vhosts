@@ -7,5 +7,7 @@ export default defineNuxtConfig({
     appRoot: '.data',
     // Overridable via NUXT_APP_CONFIG
     appConfig: '.config',
+    // Edge default page brand/title (localhost:80); via NUXT_EDGE_TITLE
+    edgeTitle: 'vhosts',
   },
 })

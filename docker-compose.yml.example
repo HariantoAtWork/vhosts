@@ -17,3 +17,5 @@ services:
       - VHOSTS_CONTROL_TLS_PORT=${VHOSTS_CONTROL_TLS_PORT:-1443}
       - NUXT_APP_ROOT=${NUXT_APP_ROOT:-/var/lib/vhosts}
       - NUXT_APP_CONFIG=${NUXT_APP_CONFIG:-/etc/vhosts}
+      # Optional: brand on edge default page (localhost:80), not site placeholders
+      # - NUXT_EDGE_TITLE=${NUXT_EDGE_TITLE:-vhosts}

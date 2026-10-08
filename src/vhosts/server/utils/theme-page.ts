@@ -63,11 +63,13 @@ code {
 
 export function renderThemePage(options: {
   title: string
+  brand?: string
   heading: string
   lede: string
   bodyHtml: string
 }): string {
   const { title, heading, lede, bodyHtml } = options
+  const brand = options.brand ?? title
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,7 +81,7 @@ export function renderThemePage(options: {
 <body>
   <div class="shell">
     <header class="top">
-      <div class="brand">vhosts</div>
+      <div class="brand">${escapeHtml(brand)}</div>
     </header>
     <h1>${escapeHtml(heading)}</h1>
     <p class="lede">${lede}</p>
@@ -90,6 +92,13 @@ export function renderThemePage(options: {
 </body>
 </html>
 `
+}
+
+/** Resolve optional edge default-page title (NUXT_EDGE_TITLE). */
+export function resolveEdgeTitle(raw: unknown): string {
+  if (typeof raw !== 'string') return 'vhosts'
+  const trimmed = raw.trim()
+  return trimmed.length > 0 ? trimmed : 'vhosts'
 }
 
 function escapeHtml(value: string): string {
@@ -111,9 +120,10 @@ export const SITE_PLACEHOLDER_HTML = renderThemePage({
       </p>`,
 })
 
-export function edgeManagementHtml(controlPort: number): string {
+export function edgeManagementHtml(controlPort: number, edgeTitle = 'vhosts'): string {
   return renderThemePage({
-    title: 'vhosts',
+    title: edgeTitle,
+    brand: edgeTitle,
     heading: 'Management UI',
     lede: `This edge listener serves static sites only.`,
     bodyHtml: `<p>
@@ -123,9 +133,10 @@ export function edgeManagementHtml(controlPort: number): string {
   })
 }
 
-export function edgeUnknownHostHtml(): string {
+export function edgeUnknownHostHtml(edgeTitle = 'vhosts'): string {
   return renderThemePage({
-    title: 'vhosts',
+    title: edgeTitle,
+    brand: edgeTitle,
     heading: 'Unknown host',
     lede: 'No site is mapped to this Host header.',
     bodyHtml: `<p>

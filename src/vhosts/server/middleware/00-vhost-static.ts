@@ -22,17 +22,19 @@ export default defineEventHandler(async (event) => {
     ensureSubdir: true,
   })
 
+  const edgeTitle = resolveEdgeTitle(useRuntimeConfig(event).edgeTitle)
+
   // Never serve Nuxt on the edge — even for managementHosts.
   if (resolved.kind === 'management') {
     setResponseStatus(event, 404)
     setHeader(event, 'content-type', 'text/html; charset=utf-8')
-    return edgeManagementHtml(controlPort())
+    return edgeManagementHtml(controlPort(), edgeTitle)
   }
 
   if (resolved.kind === 'unknown' || !resolved.publicRoot || !resolved.site) {
     setResponseStatus(event, 404)
     setHeader(event, 'content-type', 'text/html; charset=utf-8')
-    return edgeUnknownHostHtml()
+    return edgeUnknownHostHtml(edgeTitle)
   }
 
   const spa = Boolean(resolved.site.spa)
