@@ -2,6 +2,14 @@ const HOST_RE = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{
 const PATH_RE = /^[a-z0-9][a-z0-9._-]*$/i
 const LABEL_RE = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i
 
+/** Only a leading wildcard label is accepted: `*.example.com`. */
+const WILDCARD_PREFIX = '*.'
+
+/** Apex of `*.example.com` → `example.com`; exact hosts → null. */
+export function wildcardHostApex(host: string): string | null {
+  return host.startsWith(WILDCARD_PREFIX) ? host.slice(WILDCARD_PREFIX.length) : null
+}
+
 export function sanitizeHost(raw: string | undefined | null): string | null {
   if (!raw) return null
   let host = String(raw).trim().toLowerCase()
@@ -15,13 +23,18 @@ export function sanitizeHost(raw: string | undefined | null): string | null {
       host = host.slice(0, colon)
     }
   }
+  const wildcard = host.startsWith(WILDCARD_PREFIX)
+  if (wildcard) host = host.slice(WILDCARD_PREFIX.length)
+
   if (!host || host.length > 253) return null
   if (host.includes('..') || host.includes('/') || host.includes('\\') || host.includes(' ')) {
     return null
   }
-  if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return host
+  if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+    return wildcard ? `${WILDCARD_PREFIX}${host}` : host
+  }
   if (!HOST_RE.test(host)) return null
-  return host
+  return wildcard ? `${WILDCARD_PREFIX}${host}` : host
 }
 
 export function sanitizeSitePath(raw: string | undefined | null): string | null {

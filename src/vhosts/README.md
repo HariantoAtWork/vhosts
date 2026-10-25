@@ -16,7 +16,9 @@ Public domains → edge `:80`. Operator UI → `:1080` (do not share edge with t
 
 - Serves files from `appRoot` based on the HTTP `Host` header (edge only)
 - Optional SPA fallback per site
+- `hosts` entries are exact names, or `*.example.com` wildcards (one label: `foo.example.com`)
 - Auto-maps `{label}.{apex}` → `{path}/subdomains/{label}/public/`
+- Host matching order: exact host → `*.apex` entry → `autoSubdomains` fallback
 - TLS/DNS stay outside — typically [acmedns-stack](../../acmedns-stack) Proxy Hosts → `http://vhosts:80`
 
 ## Layout
@@ -42,7 +44,7 @@ harianto.dev/
     {
       "uuid": "…",
       "path": "mdstn.com",
-      "hosts": ["mdstn.com", "otherhost.com"],
+      "hosts": ["mdstn.com", "otherhost.com", "*.harianto.dev"],
       "spa": false,
       "autoSubdomains": true,
       "enabled": true,
@@ -53,6 +55,17 @@ harianto.dev/
 ```
 
 Every site list item uses field `uuid` (UUID v7). `engine: "php"` is reserved for later.
+
+Hosts are matched in this order, first hit wins:
+
+1. exact host — `mdstn.com` → `{path}/public/`
+2. `*.apex` entry — `foo.harianto.dev` → `{path}/subdomains/foo/public/`
+3. `autoSubdomains` on a plain entry — same mapping, for any host (one label) under it
+
+Wildcards are a single `*` in the leftmost label. `a.b.harianto.dev` is not matched by
+`*.harianto.dev` — a wildcard certificate/DNS record doesn't cover it either. Issue
+`*.harianto.dev` in acmedns-stack and list `*.harianto.dev` (plus `harianto.dev` if you
+want the apex too) in the Proxy Host domains.
 
 ## Local development
 

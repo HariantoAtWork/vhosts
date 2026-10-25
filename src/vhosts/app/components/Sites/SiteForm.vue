@@ -60,6 +60,10 @@ function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
       @input="onHostsInput"
       @blur="onHostsBlur"
     />
+    <p class="hint">
+      Exact names, or a wildcard like <code>*.harianto.dev</code> — one label only
+      (<code>foo.harianto.dev</code> → <code>subdomains/foo/</code>).
+    </p>
 
     <label for="path">Path (folder under appRoot)</label>
     <input
@@ -106,3 +110,11 @@ function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
     </div>
   </form>
 </template>
+
+<style scoped>
+.hint {
+  margin: -0.6rem 0 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+</style>
