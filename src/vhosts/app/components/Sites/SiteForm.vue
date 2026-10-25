@@ -11,16 +11,37 @@ const emit = defineEmits<{
   submit: []
 }>()
 
-const hostsText = computed({
-  get: () => props.modelValue.hosts.join('\n'),
-  set: (value: string) => {
-    const hosts = value
-      .split(/[\n,]+/)
-      .map(s => s.trim())
-      .filter(Boolean)
-    emit('update:modelValue', { ...props.modelValue, hosts })
+function textToHosts(value: string) {
+  return value
+    .split(/[\n,]+/)
+    .map(s => s.trim())
+    .filter(Boolean)
+}
+
+// Keep the raw textarea text: re-deriving it from `hosts` would eat the
+// trailing newline the user just typed with Enter.
+const hostsText = ref(props.modelValue.hosts.join('\n'))
+
+watch(
+  () => props.modelValue.hosts,
+  (hosts) => {
+    if (textToHosts(hostsText.value).join('\n') !== hosts.join('\n')) {
+      hostsText.value = hosts.join('\n')
+    }
   },
-})
+)
+
+function onHostsInput(event: Event) {
+  const value = (event.target as HTMLTextAreaElement).value
+  hostsText.value = value
+  emit('update:modelValue', { ...props.modelValue, hosts: textToHosts(value) })
+}
+
+function onHostsBlur(event: Event) {
+  const value = (event.target as HTMLTextAreaElement).value
+  const normalized = textToHosts(value).join('\n')
+  if (normalized !== value) hostsText.value = normalized
+}
 
 function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
   emit('update:modelValue', { ...props.modelValue, [key]: value })
@@ -32,10 +53,12 @@ function patch<K extends keyof SiteInput>(key: K, value: SiteInput[K]) {
     <label for="hosts">Hosts (one per line)</label>
     <textarea
       id="hosts"
-      v-model="hostsText"
       rows="4"
       required
       placeholder="mdstn.com&#10;otherhost.com"
+      :value="hostsText"
+      @input="onHostsInput"
+      @blur="onHostsBlur"
     />
 
     <label for="path">Path (folder under appRoot)</label>
